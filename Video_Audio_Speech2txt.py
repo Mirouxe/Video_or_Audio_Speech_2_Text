@@ -4,59 +4,59 @@ import os
 from pydub import AudioSegment
 import ffmpeg
 
-# Spécifier le fichier d'entrée et de sortie
-methode = 'whisper' # google ou whisper 
-contenu = 'texte'  # texte ou video
-nom = 'PT4'
-input_file = nom + '.mp4'
-filename = nom + '.wav'
+# Specify the input and output files
+method = 'whisper'  # 'google' or 'whisper'
+content = 'video'  # 'audio' or 'video'
+name = 'test'
+input_file = name + '.mp4'
+filename = name + '.wav'
 
-if contenu == 'video':
-    # Extraire l'audio
-    if (os.path.exists(filename)==False) : 
+if content == 'video':
+    # Extract the audio
+    if (os.path.exists(filename) == False): 
         try:
-            ffmpeg.input(input_file).output(nom + '.m4a').run(quiet=False, overwrite_output=True)
+            ffmpeg.input(input_file).output(name + '.m4a').run(quiet=False, overwrite_output=True)
         except ffmpeg.Error as e:
             print('Error:', e)
 
-## Conversion m4a --> wav 
-audio = AudioSegment.from_file(nom + '.m4a', format='m4a')
+## Conversion from m4a to wav 
+audio = AudioSegment.from_file(name + '.m4a', format='m4a')
 audio.export(filename, format='wav')
 
-if methode == 'whisper':
+if method == 'whisper':
     model = whisper.load_model('turbo')
     result = model.transcribe(filename)
     text = str(result["text"])
     
-elif methode == 'google': 
+elif method == 'google': 
     ### GOOGLE ###
-    # initialize the recognizer
+    # Initialize the recognizer
     r = sr.Recognizer()
 
-    # open the file
+    # Open the file
     with sr.AudioFile(filename) as source:
-        # listen for the data (load audio to memory)
+        # Listen for the data (load audio to memory)
         audio_data = r.record(source)
-        # recognize (convert from speech to text)
+        # Recognize (convert from speech to text)
         text = r.recognize_google(audio_data, language='fr-FR')
     
 def write_text_with_line_breaks(text, filename, line_length=100):
-    words = text.split()  # Séparer le texte en mots
+    words = text.split()  # Split the text into words
     current_line = ""
 
-    with open(nom + '.txt', 'w', encoding='utf-8') as f:
+    with open(name + '.txt', 'w', encoding='utf-8') as f:
         for word in words:
-            # Vérifier si ajouter le mot dépasse la longueur de ligne
+            # Check if adding the word exceeds the line length
             if len(current_line) + len(word) + 1 <= line_length:
-                if current_line:  # Ajouter un espace si la ligne n'est pas vide
+                if current_line:  # Add a space if the line is not empty
                     current_line += " "
                 current_line += word
             else:
-                # Écrire la ligne actuelle et réinitialiser pour la nouvelle ligne
+                # Write the current line and reset for the new line
                 f.write(current_line + '\n')
-                current_line = word  # Commencer une nouvelle ligne avec le mot actuel
+                current_line = word  # Start a new line with the current word
 
-        # Écrire la dernière ligne si elle n'est pas vide
+        # Write the last line if it's not empty
         if current_line:
             f.write(current_line + '\n')
 
