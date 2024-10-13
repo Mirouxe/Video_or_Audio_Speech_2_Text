@@ -6,8 +6,9 @@ import ffmpeg
 
 # Specify the input and output files
 method = 'whisper'  # 'google' or 'whisper'
-content = 'video'  # 'audio' or 'video'
-name = 'test'
+content = 'video'   # 'audio' or 'video'
+name = 'test'       # base name of the file
+
 input_file = name + '.mp4'
 filename = name + '.wav'
 
