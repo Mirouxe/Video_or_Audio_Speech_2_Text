@@ -23,6 +23,7 @@ Avant d'exécuter le code, assurez-vous d'avoir installé les dépendances néce
 - ffmpeg
 
 Vous pouvez installer les dépendances via pip :
+```bash
 pip install git+https://github.com/openai/whisper.git
 pip install SpeechRecognition
 pip install pydub
